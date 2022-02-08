@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import CanvasJSReact from '../../assets/canvasjs.react';
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -24,8 +25,11 @@ var cpuChartOptions = {
 	animationEnabled: true,
 	theme: "light2", // "light1", "light2", "dark1", "dark2"
 	title:{
-	  text: "Temperature",
-	  horizontalAlign: "left"
+	  text: "Temperature(°C)",
+	  horizontalAlign: "left",
+	  fontColor:'#717171',
+	  fontSize:14,
+	  padding:{left:20,top:5}
 	},
 	height: 100,
 	zoomEnabled: true,
@@ -67,12 +71,13 @@ var cpuChartOptions = {
 	  //legendMarkerType: "square",
 	  dataPoints: userDps,
 	  fillOpacity: "0",
+	  lineThickness:1,
 	},{
 	  type: "stepLine", 
 	  //showInLegend: "false",
 	  //name: "System",
 	 // yValueFormatString: "#0.#%",
-	  color: "#000000",
+	  color: "#9B9B9B",
 	  //xValueType: "dateTime",
 	  //xValueFormatString: "DD MMM YY HH:mm",
 	  //legendMarkerType: "square",
@@ -85,8 +90,11 @@ var cpuChartOptions = {
 	animationEnabled: true,
 	theme: "light2",
 	title:{
-	  text: "Humidity",
-	  horizontalAlign: "left"
+	  text: "Humidity (%)",
+	  horizontalAlign: "left",
+	  fontColor:'#717171',
+	  fontSize:14,
+	  padding:{left:20,top:5}
 	},
 	axisX:{
 		gridThickness: 0,
@@ -122,19 +130,20 @@ var cpuChartOptions = {
 	  type: "splineArea", 
 	  showInLegend: false,
 	  name: "Cache",
-	  color: "#e57373",
+	  color: "#000000",
 	  xValueType: "dateTime",
 	  xValueFormatString: "DD MMM YY HH:mm",
 	  yValueFormatString: "#.## GB",
 	  legendMarkerType: "square",
 	  dataPoints: cacheDps,
 	  fillOpacity: "0",
+	  lineThickness:1,
 	},{
 	  type: "stepLine", 
 	  showInLegend: false,
 	  name: "System",
 	 // yValueFormatString: "#0.#%",
-	  color: "#000000",
+	  color: "#9B9B9B",
 	  //xValueType: "dateTime",
 	  //xValueFormatString: "DD MMM YY HH:mm",
 	  //legendMarkerType: "square",
@@ -147,8 +156,11 @@ var cpuChartOptions = {
 	animationEnabled: true,
 	theme: "light2",
 	title:{
-	  text: "CO2",
-	  horizontalAlign: "left"
+	  text: "CO2 (ppm)",
+	  horizontalAlign: "left",
+	  fontColor:'#717171',
+	  fontSize:14,
+	  padding:{left:20,top:5}
 	},
 	axisX: {
 		crosshair: {
@@ -177,19 +189,20 @@ var cpuChartOptions = {
 	  type: "splineArea", 
 	  showInLegend: false,
 	  name: "Outbound",
-	  color: "#81c784",
+	  color: "#000000",
 	  xValueType: "dateTime",
 	  xValueFormatString: "DD MMM YY HH:mm",
 	  yValueFormatString: "#.## Kb/s",
 	  legendMarkerType: "square",
 	  dataPoints: outboundDps,
 	  fillOpacity: "0",
+	  lineThickness:1
 	},{
 	  type: "stepLine", 
 	  showInLegend: false,
 	  name: "System",
 	 // yValueFormatString: "#0.#%",
-	  color: "#000000",
+	  color: "#9B9B9B",
 	  //xValueType: "dateTime",
 	  //xValueFormatString: "DD MMM YY HH:mm",
 	  //legendMarkerType: "square",
@@ -238,19 +251,20 @@ var cpuChartOptions = {
 	  type: "bar", 
 	  showInLegend: "true",
 	  name: "Write",
-	  color: "#ffb74d",
+	  color: "#000000",
 	  xValueType: "dateTime",
 	  xValueFormatString: "DD MMM YY HH:mm",
 	  yValueFormatString: "#.## ops/second",
 	  legendMarkerType: "square",
 	  dataPoints: writeDps,
 	  fillOpacity: "0",
+	  lineThickness:1
 	},{
 	  type: "stepLine", 
 	  //showInLegend: "false",
 	  //name: "System",
 	 // yValueFormatString: "#0.#%",
-	  color: "#000000",
+	  color: "#9B9B9B",
 	  //xValueType: "dateTime",
 	  //xValueFormatString: "DD MMM YY HH:mm",
 	  //legendMarkerType: "square",
@@ -415,7 +429,24 @@ class LineChart extends Component {
 					for( var j = 0; j < this.charts.length; j++){
 						this.charts[j].render();
 					}
-		
+
+					// Set the Toolbar state to default zoom level - leveraging JS code as the ref object is not available
+					// var parentElement = document.getElementsByClassName("canvasjs-chart-toolbar");
+					var childElement = document.getElementsByTagName("button");
+					for(var i=0;i<childElement.length;i++){
+						if(childElement[i].getAttribute("state") === "pan"){
+							childElement[i].click();
+						}
+					}
+
+					// hiding the toolbars for the charts
+					var parentElement = document.getElementsByClassName("canvasjs-chart-toolbar");
+					for(var i=0; i<parentElement.length; i++) {
+						if(parentElement[i]) {
+							parentElement[i].style.display = "none";
+						}
+					}
+
 				});
 			}
 
@@ -587,6 +618,3 @@ class LineChart extends Component {
 }
 
 export default LineChart;
-
-
-
