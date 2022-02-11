@@ -19,6 +19,8 @@ var legend = {
 	}
   }; 
 
+// Old code and converted to the local State and the State is updated from APIs
+/*
 var systemDps = [], userDps=[], waitDps = [], buffersDps = [], cacheDps = [], usedDps=[], inboundDps = [], outboundDps = [], writeDps = [], readDps = [];
 
 var cpuChartOptions = {
@@ -64,7 +66,7 @@ var cpuChartOptions = {
 	  type: "splineArea", 
 	  showInLegend: false,
 	  name: "Temperature",
-	  yValueFormatString: "#0.#%",
+	  //yValueFormatString: "#0.#%",
 	  color: "#000000",
 	  xValueType: "dateTime",
 	  xValueFormatString: "DD MMM YY HH:mm",
@@ -72,6 +74,7 @@ var cpuChartOptions = {
 	  dataPoints: userDps,
 	  fillOpacity: "0",
 	  lineThickness:1,
+	  toolTipContent: "{y}"
 	},{
 	  type: "stepLine", 
 	  //showInLegend: "false",
@@ -83,6 +86,7 @@ var cpuChartOptions = {
 	  //legendMarkerType: "square",
 	  dataPoints: systemDps,
 	  lineDashType: "shortDot",
+	  toolTipContent: "({y})"
 	}]
   };
 
@@ -133,11 +137,12 @@ var cpuChartOptions = {
 	  color: "#000000",
 	  xValueType: "dateTime",
 	  xValueFormatString: "DD MMM YY HH:mm",
-	  yValueFormatString: "#.## GB",
+	  //yValueFormatString: "#.## GB",
 	  legendMarkerType: "square",
 	  dataPoints: cacheDps,
 	  fillOpacity: "0",
 	  lineThickness:1,
+	  toolTipContent: "{y}"
 	},{
 	  type: "stepLine", 
 	  showInLegend: false,
@@ -149,6 +154,7 @@ var cpuChartOptions = {
 	  //legendMarkerType: "square",
 	  dataPoints: systemDps,
 	  lineDashType: "shortDot",
+	  toolTipContent: "({y})"
 	}]
   }
 
@@ -192,11 +198,12 @@ var cpuChartOptions = {
 	  color: "#000000",
 	  xValueType: "dateTime",
 	  xValueFormatString: "DD MMM YY HH:mm",
-	  yValueFormatString: "#.## Kb/s",
+	  //yValueFormatString: "#.## Kb/s",
 	  legendMarkerType: "square",
 	  dataPoints: outboundDps,
 	  fillOpacity: "0",
-	  lineThickness:1
+	  lineThickness:1,
+	  toolTipContent: "{y}"
 	},{
 	  type: "stepLine", 
 	  showInLegend: false,
@@ -208,6 +215,7 @@ var cpuChartOptions = {
 	  //legendMarkerType: "square",
 	  dataPoints: systemDps,
 	  lineDashType: "shortDot",
+	  toolTipContent: "({y})"
 	}]
   }
 
@@ -273,12 +281,284 @@ var cpuChartOptions = {
 	}]
   }
 
-
+*/
 
 class LineChart extends Component {
 
 	constructor() {
 		super();
+
+		this.state = {
+			systemDps : [], 
+			userDps:[], 
+			waitDps : [], 
+			buffersDps : [], 
+			cacheDps : [], 
+			usedDps:[], 
+			inboundDps : [], 
+			outboundDps : [], 
+			writeDps : [], 
+			readDps : []
+		}
+
+
+		this.cpuChartOptions = {
+			animationEnabled: true,
+			theme: "light2", // "light1", "light2", "dark1", "dark2"
+			title:{
+			  text: "Temperature(°C)",
+			  horizontalAlign: "left",
+			  fontColor:'#717171',
+			  fontSize:14,
+			  padding:{left:20,top:5}
+			},
+			height: 100,
+			zoomEnabled: true,
+			zoomType: "x",
+			toolTip: toolTip,
+			axisX:{
+				gridThickness: 0,
+				tickLength: 0,
+				lineThickness: 0,
+				labelFormatter: function(){
+					return " ";
+				},
+				crosshair: {
+					enabled: true,
+					snapToDataPoint: true
+				},
+				viewportMinimum: 1549474200000,
+				viewportMaximum: 1549560600000,
+				interval: 3600000
+			}, 
+			axisY: {
+				gridThickness: 0,
+				tickLength: 0,
+				lineThickness: 0,
+				labelFormatter: function(){
+					return " ";
+				}
+			},
+			legend: legend,
+			backgroundColor: "#f4f4f4",
+			data: [{
+			  type: "splineArea", 
+			  showInLegend: false,
+			  name: "Temperature",
+			  //yValueFormatString: "#0.#%",
+			  color: "#000000",
+			  xValueType: "dateTime",
+			  xValueFormatString: "DD MMM YY HH:mm",
+			  //legendMarkerType: "square",
+			  dataPoints: this.state.userDps,
+			  fillOpacity: "0",
+			  lineThickness:1,
+			  toolTipContent: "{y}"
+			},{
+			  type: "stepLine", 
+			  //showInLegend: "false",
+			  //name: "System",
+			 // yValueFormatString: "#0.#%",
+			  color: "#9B9B9B",
+			  //xValueType: "dateTime",
+			  //xValueFormatString: "DD MMM YY HH:mm",
+			  //legendMarkerType: "square",
+			  dataPoints: this.state.systemDps,
+			  lineDashType: "shortDot",
+			  toolTipContent: "({y})"
+			}]
+		  };
+		
+		this.memoryChartOptions = {
+			animationEnabled: true,
+			theme: "light2",
+			title:{
+			  text: "Humidity (%)",
+			  horizontalAlign: "left",
+			  fontColor:'#717171',
+			  fontSize:14,
+			  padding:{left:20,top:5}
+			},
+			axisX:{
+				gridThickness: 0,
+				tickLength: 0,
+				lineThickness: 0,
+				labelFormatter: function(){
+					return " ";
+				},
+				crosshair: {
+					enabled: true,
+					snapToDataPoint: true
+				},
+				viewportMinimum: 1549474200000,
+				viewportMaximum: 1549560600000,
+				interval: 3600000
+			},
+			axisY: {
+				gridThickness: 0,
+				tickLength: 0,
+				lineThickness: 0,
+				labelFormatter: function(){
+					return " ";
+				}
+			},
+			height: 100,
+			zoomEnabled: true,
+			zoomType: "x",
+			toolTip: toolTip,
+			legend: legend,
+			backgroundColor: "#f4f4f4",
+			backgroundColor: "#f4f4f4",
+			data: [{
+			  type: "splineArea", 
+			  showInLegend: false,
+			  name: "Cache",
+			  color: "#000000",
+			  xValueType: "dateTime",
+			  xValueFormatString: "DD MMM YY HH:mm",
+			  //yValueFormatString: "#.## GB",
+			  legendMarkerType: "square",
+			  dataPoints: this.state.cacheDps,
+			  fillOpacity: "0",
+			  lineThickness:1,
+			  toolTipContent: "{y}"
+			},{
+			  type: "stepLine", 
+			  showInLegend: false,
+			  name: "System",
+			 // yValueFormatString: "#0.#%",
+			  color: "#9B9B9B",
+			  //xValueType: "dateTime",
+			  //xValueFormatString: "DD MMM YY HH:mm",
+			  //legendMarkerType: "square",
+			  dataPoints: this.state.systemDps,
+			  lineDashType: "shortDot",
+			  toolTipContent: "({y})"
+			}]
+		  }
+		
+		this.networkChartOptions = {
+			animationEnabled: true,
+			theme: "light2",
+			title:{
+			  text: "CO2 (ppm)",
+			  horizontalAlign: "left",
+			  fontColor:'#717171',
+			  fontSize:14,
+			  padding:{left:20,top:5}
+			},
+			axisX: {
+				crosshair: {
+					enabled: true,
+					snapToDataPoint: true
+				},
+				viewportMinimum: 1549474200000,
+				viewportMaximum: 1549560600000,
+				interval: 3600000
+			},
+			axisY: {
+				gridThickness: 0,
+				tickLength: 0,
+				lineThickness: 0,
+				labelFormatter: function(){
+					return " ";
+				},
+			},
+			height: 100,
+			zoomEnabled: true,
+			zoomType: "x",
+			toolTip: toolTip,
+			legend: legend,
+			backgroundColor: "#f4f4f4",
+			data: [{
+			  type: "splineArea", 
+			  showInLegend: false,
+			  name: "Outbound",
+			  color: "#000000",
+			  xValueType: "dateTime",
+			  xValueFormatString: "DD MMM YY HH:mm",
+			  //yValueFormatString: "#.## Kb/s",
+			  legendMarkerType: "square",
+			  dataPoints: this.state.outboundDps,
+			  fillOpacity: "0",
+			  lineThickness:1,
+			  toolTipContent: "{y}"
+			},{
+			  type: "stepLine", 
+			  showInLegend: false,
+			  name: "System",
+			 // yValueFormatString: "#0.#%",
+			  color: "#9B9B9B",
+			  //xValueType: "dateTime",
+			  //xValueFormatString: "DD MMM YY HH:mm",
+			  //legendMarkerType: "square",
+			  dataPoints: this.state.systemDps,
+			  lineDashType: "shortDot",
+			  toolTipContent: "({y})"
+			}]
+		  }
+		
+		this.diskChartOptions = {
+			animationEnabled: true,
+			theme: "light2",
+			title:{
+			  text: "Light rows",
+			  horizontalAlign: "left"
+			},
+			axisX:{
+				gridThickness: 0,
+				tickLength: 0,
+				lineThickness: 0,
+				labelFormatter: function(){
+					return " ";
+				},
+				crosshair: {
+					enabled: true,
+					snapToDataPoint: true
+				},
+				viewportMinimum: 1549474200000,
+				viewportMaximum: 1549560600000,
+				interval: 3600000
+			},
+			axisY: {
+				gridThickness: 0,
+				tickLength: 0,
+				lineThickness: 0,
+				labelFormatter: function(){
+					return " ";
+				},
+			},
+			height: 100,
+			zoomEnabled: true,
+			zoomType: "x",
+			toolTip: toolTip,
+			legend: legend,
+			backgroundColor: "#f4f4f4",
+			data: [{
+			  type: "bar", 
+			  showInLegend: "true",
+			  name: "Write",
+			  color: "#000000",
+			  xValueType: "dateTime",
+			  xValueFormatString: "DD MMM YY HH:mm",
+			  yValueFormatString: "#.## ops/second",
+			  legendMarkerType: "square",
+			  dataPoints: this.state.writeDps,
+			  fillOpacity: "0",
+			  lineThickness:1
+			},{
+			  type: "stepLine", 
+			  //showInLegend: "false",
+			  //name: "System",
+			 // yValueFormatString: "#0.#%",
+			  color: "#9B9B9B",
+			  //xValueType: "dateTime",
+			  //xValueFormatString: "DD MMM YY HH:mm",
+			  //legendMarkerType: "square",
+			  dataPoints: this.state.systemDps,
+			  lineDashType: "shortDot",
+			}]
+		  }
 
 		this.charts = [];
 
@@ -381,7 +661,14 @@ class LineChart extends Component {
 
 	  componentDidMount() {
 
-		if(systemDps.length === 0) {
+		//if(systemDps.length === 0) {
+		if(this.state.systemDps.length === 0) {
+
+
+			// Get the State Variable
+			let { systemDps, userDps, waitDps, buffersDps, cacheDps, usedDps, inboundDps, outboundDps, writeDps, readDps } = this.state;
+
+
 			//$.get("https://canvasjs.com/data/gallery/javascript/server-matrics.json", function(data) {		 
 				fetch("https://canvasjs.com/data/gallery/javascript/server-matrics.json")
 				.then((res) => res.json())
@@ -400,6 +687,9 @@ class LineChart extends Component {
 					readDps.push({x: parseInt(data[i].time), y: parseFloat(data[i].read)});
 					}
 	
+					// Set the local State
+					this.setState({systemDps, userDps, waitDps, buffersDps, cacheDps, usedDps, inboundDps, outboundDps, writeDps, readDps});
+
 					for( i = 0; i < this.charts.length; i++){
 	
 						this.charts[i].options.axisX = {
@@ -607,9 +897,9 @@ class LineChart extends Component {
 				onRef={ref => this.chart = ref}
 			/> */}
 
-		<CanvasJSChart options = {cpuChartOptions} onRef={ref1 => this.charts[0] = ref1} />
-		<CanvasJSChart options = {memoryChartOptions} onRef={ref2 => this.charts[1] = ref2} />
-		<CanvasJSChart options = {networkChartOptions} onRef={ref3 => this.charts[2] = ref3} />
+		<CanvasJSChart options = {this.cpuChartOptions} onRef={ref1 => this.charts[0] = ref1} />
+		<CanvasJSChart options = {this.memoryChartOptions} onRef={ref2 => this.charts[1] = ref2} />
+		<CanvasJSChart options = {this.networkChartOptions} onRef={ref3 => this.charts[2] = ref3} />
 		{/* <CanvasJSChart options = {diskChartOptions} onRef={ref4 => this.charts[3] = ref4} /> */}
 	  </div>
 	  </>
